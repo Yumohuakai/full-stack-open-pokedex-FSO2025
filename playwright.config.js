@@ -2,6 +2,8 @@ import { defineConfig } from '@playwright/test'
 
 module.exports = defineConfig({
   testDir: './e2e-tests',
+
+  /* test for production-mode */
   webServer: {
     command: 'npm run start-prod',
     url: 'http://localhost:5000',
@@ -11,4 +13,15 @@ module.exports = defineConfig({
   use: {
     baseURL: 'http://localhost:5000/',
   },
+
+  /* test for local development-mode */
+  // webServer: {
+  //   command: 'npm start',
+  //   url: 'http://localhost:8080',
+  //   timeout: 120 * 1000,
+  //   reuseExistingServer: !process.env.CI,
+  // },
+  // use: {
+  //   baseURL: 'http://localhost:8080/',
+  // },
 })

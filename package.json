@@ -11,7 +11,8 @@
     "eslint:fix": "eslint './**/*.{js,jsx}' --fix",
     "build": "webpack --mode production",
     "test:e2e": "playwright test",
-    "test:report": "playwright show-report"
+    "test:report": "playwright show-report",
+    "localflow": "npm run eslint && npm run test && npm run build && npm run test:e2e"
   },
   "repository": {
     "type": "git",
