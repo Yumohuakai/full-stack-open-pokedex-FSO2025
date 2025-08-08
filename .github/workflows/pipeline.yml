@@ -31,6 +31,8 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
+      # Deployment with custom action, it can be found from GitHub Actions marketplace, 
+      # I chose this: https://github.com/marketplace/actions/render-deployment
       - name: Automate deployment to Render
         uses: sws2apps/render-deployment@main #consider using pin for dependabot auto update
         with:
