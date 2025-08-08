@@ -8,6 +8,8 @@ on:
 jobs:
   simple_deployment_pipeline:
     runs-on: ubuntu-latest
+    permissions:
+      deployments: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -38,4 +40,9 @@ jobs:
         with:
           service_id: ${{ secrets.RENDER_SERVICE_ID }}
           api_key: ${{ secrets.RENDER_API_KEY }}
+          clear_cache: true # Optional: Clear Render's build cache
+          wait_deploy: true
+          github_deployment: true
+          deployment_environment: 'production'
+          github_token: ${{ secrets.MY_GITHUB_TOKEN }}
 
