@@ -63,7 +63,10 @@ jobs:
       #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       #     DEFAULT_BUMP: patch
       - name: Bump version and push tag way 2
-        uses: anothrNick/github-tag-action@1.73.0
+        # the 'github-tag-action' is currently updated at 1.73.0
+        # here uses the hash code instead of version number: 1.73.0 for the third-party actions        # 
+        uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
         env:
           GITHUB_TOKEN: ${{ github.token }}
           DEFAULT_BUMP: patch
+          DRY_RUN: true
