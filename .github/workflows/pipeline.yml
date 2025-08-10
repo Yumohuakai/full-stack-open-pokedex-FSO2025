@@ -45,24 +45,17 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Test getting example secret value 1
+      - name: Test getting built-in GITHUB_TOKEN value
         run: |
-          echo "Hello World! - $TEST_TOKEN" 
-        env:
-          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
-      - name: Test getting example secret value 2
+          echo "Hello World! - $GITHUB_TOKEN" 
+      - name: Test print built-in GITHUB_TOKEN value
         run: |
-          echo "$TEST_TOKEN" 
-        env:
-          TEST_TOKEN: ${{ secrets.TEST_TOKEN }}
-      - name: Test print env 1
-        run: |
-          echo "$GITHUB_REPOSITORY" 
-      - name: Test print env 2
+          echo "$GITHUB_TOKEN" 
+      - name: Test print env
         run: |
           echo "$GITHUB_REPOSITORY_OWNER" 
       # - name: Bump version and push tag
       #   uses: anothrNick/github-tag-action@1.73.0
       #   env:
-      #     GITHUB_TOKEN: ${{ secrets.MY_TOKEN }}
+      #     GITHUB_TOKEN: ${{ GITHUB_TOKEN }}
       #     DEFAULT_BUMP: patch
