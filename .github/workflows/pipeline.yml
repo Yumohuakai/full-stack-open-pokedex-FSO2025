@@ -44,6 +44,7 @@ jobs:
     if: ${{ github.event_name == 'push' }}
     permissions:
       contents: write
+      pull-requests: write 
     steps:
       # - name: Test print built-in GITHUB_TOKEN way 1 # works
       #   run: |
