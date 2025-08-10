@@ -45,20 +45,25 @@ jobs:
     permissions:
       contents: write
     steps:
-      - name: Test print built-in GITHUB_TOKEN way 1
-        run: |
-          echo "${{ secrets.GITHUB_TOKEN }}" 
-      - name: Test print built-in GITHUB_TOKEN way 2
-        run: |
-          echo "${{ github.token }}" 
-      - name: Test print built-in GITHUB_TOKEN way 3
-        run: |
-          echo "$GITHUB_TOKEN" 
-      - name: Test print env
-        run: |
-          echo "${{ github.repository }} - $GITHUB_REPOSITORY" 
-      # - name: Bump version and push tag
-      #   uses: anothrNick/github-tag-action@1.73.0
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      #     DEFAULT_BUMP: patch
+      # - name: Test print built-in GITHUB_TOKEN way 1 # works
+      #   run: |
+      #     echo "${{ secrets.GITHUB_TOKEN }}" 
+      # - name: Test print built-in GITHUB_TOKEN way 2 # works
+      #   run: |
+      #     echo "${{ github.token }}" 
+      # - name: Test print built-in GITHUB_TOKEN way 3 # does not work
+      #   run: |
+      #     echo "$GITHUB_TOKEN" 
+      # - name: Test print env
+      #   run: |
+      #     echo "${{ github.repository }} - $GITHUB_REPOSITORY" 
+      - name: Bump version and push tag way 1
+        uses: anothrNick/github-tag-action@1.73.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          DEFAULT_BUMP: patch
+      - name: Bump version and push tag way 2
+        uses: anothrNick/github-tag-action@1.73.0
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEFAULT_BUMP: patch
