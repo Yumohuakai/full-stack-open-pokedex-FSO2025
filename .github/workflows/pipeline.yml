@@ -47,46 +47,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-        uses: anothrNick/github-tag-action@1.73.0
+      # the version of github-tag-action currently for this hash code is 1.73.0
+        uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
         env:
           GITHUB_TOKEN: ${{ github.token }}
           DEFAULT_BUMP: patch
-
-# name: Testing stuff
-
-# env: 
-#   CONDITION: ${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches: [main]
-#     types: [opened, synchronize]
-
-# jobs:
-#   a_test_job:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#       # - name: github context
-#       #   env:
-#       #     GITHUB_CONTEXT: ${{ toJson(github) }}
-#       #   run: echo "$GITHUB_CONTEXT"
-#       # - name: commits
-#       #   env:
-#       #     COMMITS: ${{ toJson(github.event.commits) }}
-#       #   run: echo "$COMMITS"
-#       - name: commit messages
-#         env:
-#           COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-#         run: echo "$COMMIT_MESSAGES"
-#       - name: join all commit messages
-#         run: echo "$COMMIT_MESSAGES"
-#       - name: if commit messages included special piece in push action
-#         if: ${{ github.event_name == 'push' && env.CONDITION == 'true' }}
-#         run: echo "skip deploy and tag, due to push action commit message"
-#       - name: if commit messages included special piece in pull request action
-#         if: ${{ github.event_name == 'pull_request' && env.CONDITION == 'true' }}
-#         run: echo "skip deploy and tag, due to pull-request action commit message"
