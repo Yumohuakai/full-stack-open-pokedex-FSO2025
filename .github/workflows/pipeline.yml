@@ -37,7 +37,7 @@ jobs:
           path: playwright-report/
           retention-days: 30
       - name: Trigger deployment
-        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}  && echo "debug...${github.env.CONDITION}"
         if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}   
       - name: Deployment success notification to discord webhook
         if: ${{ success() }}  
@@ -65,6 +65,9 @@ jobs:
     if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}
     steps:
       - uses: actions/checkout@v4
+      - name: debug...
+        run: |
+          echo "debug...${github.env.CONDITION}"
       - name: Bump version and push tag
         # the version of github-tag-action currently for this hash code is 1.73.0
         uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
