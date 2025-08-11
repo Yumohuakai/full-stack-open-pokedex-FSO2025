@@ -38,7 +38,7 @@ jobs:
           retention-days: 30
       - name: debug...
         run: |
-          echo "${github.env.CONDITION}"
+          echo "${{github.env.CONDITION}}"
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}   
