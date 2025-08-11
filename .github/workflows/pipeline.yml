@@ -53,7 +53,7 @@
 name: Testing stuff
 
 env: 
-  COMMIT_MESSAGES: ${{ toJson(join(github.event.commits.*.message, ',')) }}
+  COMMIT_MESSAGES: ${{ toJson(join(github.event.commits.*.message, ', ')) }}
   TARGET_STRING: '#skip'
   CONDITION: contains(${ COMMIT_MESSAGES }, ${ TARGET_STRING })
 
@@ -85,8 +85,8 @@ jobs:
       - name: join all commit messages
         run: echo "$COMMIT_MESSAGES"
       - name: if commit messages included special piece
-        if: ${{ env.CONDITION == true }}
+        if: ${{ env.CONDITION == 'true' }}
         run: echo "skip deploy and tag"
       - name: if commit messages did not include special piece
-        if: ${{ env.CONDITION == false }}
+        if: ${{ env.CONDITION == 'false' }}
         run: echo "now you can deploy and tag"
