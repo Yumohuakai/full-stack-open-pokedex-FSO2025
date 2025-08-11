@@ -1,0 +1,22 @@
+name: testing - Periodic health check
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - name: test - Scheduled Health check
+        # the tag of url-health-check-action currently for this hash code is v4 (Using Node v20)
+        uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
+        with:
+          url: https://full-stack-open-pokedex-fso2025.onrender.com/health
+          max-attempts: 3 # Optional, defaults to 1
+          retry-delay: 5s # Optional, only applicable to max-attempts > 1          
