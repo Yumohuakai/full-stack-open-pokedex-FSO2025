@@ -39,6 +39,25 @@ jobs:
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}   
+      - name: Deployment success notification to discord webhook
+        if: ${{ success() }}  
+        # the version of discord-webhook-notify currently for this hash code is 2.2.1
+        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: A new version of Pokedex deployed
+          description: to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
+          severity: info
+      - name: Deployment failure notification to discord webhook
+        if: ${{ failure() }}  
+        # the version of discord-webhook-notify currently for this hash code is 2.2.1
+        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        with:
+          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+          text: Build failed
+          description: commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
+          severity: error
+          
 
   tag_release:
     needs: [simple_deployment_pipeline]
@@ -47,7 +66,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - name: Bump version and push tag
-      # the version of github-tag-action currently for this hash code is 1.73.0
+        # the version of github-tag-action currently for this hash code is 1.73.0
         uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
         env:
           GITHUB_TOKEN: ${{ github.token }}
