@@ -43,33 +43,51 @@ jobs:
       - name: debug 2...
         run: |
           echo "${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}"
+      - name: debug 2.1...
+        run: |
+          echo "${{ contains(join(github.event.commits.*.message, ', '), '#skip') == 'false' }}"
       - name: debug 3...
         run: |
-          echo "${{github.env.CONDITION}}"
+          echo "${{ github.env.CONDITION }}"
+      - name: debug 3.1...
+        run: |
+          echo "${{ github.env.CONDITION == 'false' }}"
 
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}   
-      - name: Deployment success notification to discord webhook 1 - discord-webhook-notify
+      # - name: Deployment success notification to discord webhook 1 - discord-webhook-notify
+      #   if: ${{ success() }}  
+      #   # the version of discord-webhook-notify currently for this hash code is 2.2.1
+      #   uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+      #   with:
+      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      #     text: A new version of Pokedex deployed
+      #     description: to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
+      #     severity: info
+      # - name: Deployment failure notification to discord webhook 1 - discord-webhook-notify
+      #   if: ${{ failure() }}  
+      #   # the version of discord-webhook-notify currently for this hash code is 2.2.1
+      #   uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+      #   with:
+      #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
+      #     text: Build failed
+      #     description: commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
+      #     severity: error
+      - name: Deployment success notification to discord webhook 1 - actions-status-discord
         if: ${{ success() }}  
-        # the version of discord-webhook-notify currently for this hash code is 2.2.1
-        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        # the version of actions-status-discord currently for this hash code is 1.15.3
+        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          text: A new version of Pokedex deployed
-          description: to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
-          severity: info
-      - name: Deployment failure notification to discord webhook 1 - discord-webhook-notify
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Deployment failure notification to discord webhook 1 - actions-status-discord
         if: ${{ failure() }}  
-        # the version of discord-webhook-notify currently for this hash code is 2.2.1
-        uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
+        # the version of actions-status-discord currently for this hash code is 1.15.3
+        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
         with:
-          webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-          text: Build failed
-          description: commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
-          severity: error
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
       - name: Deployment success notification to discord webhook 2 - action-discord
-        if: ${{ success() }}  
+        if: success() 
         # the version of action-discord currently for this hash code is 0.4.0
         uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
         with:          
@@ -77,7 +95,7 @@ jobs:
         env:
           DISCORD_WEBHOOK : ${{ secrets.DISCORD_WEBHOOK }}
       - name: Deployment failure notification to discord webhook 2 - action-discord
-        if: ${{ failure() }}  
+        if: failure() 
         # the version of action-discord currently for this hash code is 0.4.0
         uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
         with:
