@@ -36,13 +36,21 @@ jobs:
           name: playwright-report
           path: playwright-report/
           retention-days: 30
-      - name: debug...
+          
+      - name: debug 1...
+        run: |
+          echo "${{ join(github.event.commits.*.message, ', ') }}"
+      - name: debug 2...
+        run: |
+          echo "${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}"
+      - name: debug 3...
         run: |
           echo "${{github.env.CONDITION}}"
+
       - name: Trigger deployment
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}   
-      - name: Deployment success notification to discord webhook
+      - name: Deployment success notification to discord webhook 1 - discord-webhook-notify
         if: ${{ success() }}  
         # the version of discord-webhook-notify currently for this hash code is 2.2.1
         uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
@@ -51,7 +59,7 @@ jobs:
           text: A new version of Pokedex deployed
           description: to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
           severity: info
-      - name: Deployment failure notification to discord webhook
+      - name: Deployment failure notification to discord webhook 1 - discord-webhook-notify
         if: ${{ failure() }}  
         # the version of discord-webhook-notify currently for this hash code is 2.2.1
         uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
@@ -60,6 +68,22 @@ jobs:
           text: Build failed
           description: commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
           severity: error
+      - name: Deployment success notification to discord webhook 2 - action-discord
+        if: ${{ success() }}  
+        # the version of action-discord currently for this hash code is 0.4.0
+        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
+        with:          
+          args: A new version of Pokedex deployed to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
+        env:
+          DISCORD_WEBHOOK : ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Deployment failure notification to discord webhook 2 - action-discord
+        if: ${{ failure() }}  
+        # the version of action-discord currently for this hash code is 0.4.0
+        uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
+        with:
+          args: Build failed - commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
+        env:
+          DISCORD_WEBHOOK : ${{ secrets.DISCORD_WEBHOOK }}
           
 
   tag_release:
