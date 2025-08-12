@@ -1,126 +1,4 @@
-# name: Deployment pipeline
-# env: 
-#   CONDITION: ${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}
-
-# on:
-#   push:
-#     branches:
-#       - main
-#   pull_request:
-#     branches: [main]
-#     types: [opened, synchronize]
-
-# jobs:
-#   simple_deployment_pipeline:
-#     runs-on: ubuntu-latest
-#     steps:
-#       - uses: actions/checkout@v4
-#       - uses: actions/setup-node@v4
-#         with:
-#           node-version: "20"
-#       - name: Install dependencies
-#         run: npm install
-#       - name: Check style
-#         run: npm run eslint
-#       - name: Build for production
-#         run: npm run build
-#       - name: Test - Jest
-#         run: npm run test
-#       - name: E2E-test - 1.Install Playwright Browsers
-#         run: npx playwright install --with-deps
-#       - name: E2E-test - 2.Run Playwright tests
-#         run: npm run test:e2e
-#       - uses: actions/upload-artifact@v4
-#         if: ${{ !cancelled() }}
-#         with:
-#           name: playwright-report
-#           path: playwright-report/
-#           retention-days: 30
-          
-#       - name: debug 1...
-#         run: |
-#           echo "${{ join(github.event.commits.*.message, ', ') }}"
-#       - name: debug 2...
-#         run: |
-#           echo "${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}"
-#       - name: debug 2.1...
-#         run: |
-#           echo "${{ contains(join(github.event.commits.*.message, ', '), '#skip') == 'false' }}"
-#       - name: debug 3...
-#         run: |
-#           echo "${{ github.env.CONDITION }}"
-#       - name: debug 3.1...
-#         run: |
-#           echo "${{ github.env.CONDITION == 'false' }}"
-#       - name: debug 3.2...
-#         run: |
-#           echo "${{ !github.env.CONDITION }}"
-
-#       - name: Trigger deployment
-#         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
-#         if: ${{ github.event_name == 'push' && !github.env.CONDITION }}   
-#       # - name: Deployment success notification to discord webhook 1 - discord-webhook-notify
-#       #   if: ${{ success() }}  
-#       #   # the version of discord-webhook-notify currently for this hash code is 2.2.1
-#       #   uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
-#       #   with:
-#       #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-#       #     text: A new version of Pokedex deployed
-#       #     description: to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
-#       #     severity: info
-#       # - name: Deployment failure notification to discord webhook 1 - discord-webhook-notify
-#       #   if: ${{ failure() }}  
-#       #   # the version of discord-webhook-notify currently for this hash code is 2.2.1
-#       #   uses: rjstone/discord-webhook-notify@c2597273488aeda841dd1e891321952b51f7996f
-#       #   with:
-#       #     webhookUrl: ${{ secrets.DISCORD_WEBHOOK }}
-#       #     text: Build failed
-#       #     description: commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
-#       #     severity: error
-#       - name: Deployment success notification to discord webhook 1 - actions-status-discord
-#         if: ${{ success() }}  
-#         # the version of actions-status-discord currently for this hash code is 1.15.3
-#         uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
-#         with:
-#           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-#       - name: Deployment failure notification to discord webhook 1 - actions-status-discord
-#         if: ${{ failure() }}  
-#         # the version of actions-status-discord currently for this hash code is 1.15.3
-#         uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
-#         with:
-#           webhook: ${{ secrets.DISCORD_WEBHOOK }}
-#       - name: Deployment success notification to discord webhook 2 - action-discord
-#         if: success() 
-#         # the version of action-discord currently for this hash code is 0.4.0
-#         uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
-#         with:          
-#           args: A new version of Pokedex deployed to https://full-stack-open-pokedex-fso2025.onrender.com/ by yumo :)
-#         env:
-#           DISCORD_WEBHOOK : ${{ secrets.DISCORD_WEBHOOK }}
-#       - name: Deployment failure notification to discord webhook 2 - action-discord
-#         if: failure() 
-#         # the version of action-discord currently for this hash code is 0.4.0
-#         uses: Ilshidur/action-discord@d2594079a10f1d6739ee50a2471f0ca57418b554
-#         with:
-#           args: Build failed - commit ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.event.commits[0].id }} by yumo broke the build :(
-#         env:
-#           DISCORD_WEBHOOK : ${{ secrets.DISCORD_WEBHOOK }}
-          
-
-#   tag_release:
-#     needs: [simple_deployment_pipeline]
-#     runs-on: ubuntu-latest
-#     if: ${{ github.event_name == 'push' && !github.env.CONDITION }}
-#     steps:
-#       - uses: actions/checkout@v4
-#       - name: Bump version and push tag
-#         # the version of github-tag-action currently for this hash code is 1.73.0
-#         uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
-#         env:
-#           GITHUB_TOKEN: ${{ github.token }}
-#           DEFAULT_BUMP: patch
-
-name: Debug skip or not which is from ex11.16
+name: Deployment pipeline
 env: 
   COMMIT_MESSAGES:  ${{ join(github.event.commits.*.message, ', ') }}
   CONDITION: ${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}
@@ -134,24 +12,65 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  first_test_job:
+  simple_deployment_pipeline:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      # - name: github context
-      #   env:
-      #     GITHUB_CONTEXT: ${{ toJson(github) }}
-      #   run: echo "$GITHUB_CONTEXT"
-      # - name: commits
-      #   env:
-      #     COMMITS: ${{ toJson(github.event.commits) }}
-      #   run: echo "$COMMITS"
-      # - name: commit messages
-      #   env:
-      #     COMMIT_MESSAGES: ${{ toJson(github.event.commits.*.message) }}
-      #   run: echo "$COMMIT_MESSAGES"
-      # - name: join all commit messages
-      #   run: echo "$COMMIT_MESSAGES"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+      - name: Install dependencies
+        run: npm install
+      - name: Check style
+        run: npm run eslint
+      - name: Build for production
+        run: npm run build
+      - name: Test - Jest
+        run: npm run test
+      - name: E2E-test - 1.Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: E2E-test - 2.Run Playwright tests
+        run: npm run test:e2e
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-report
+          path: playwright-report/
+          retention-days: 30          
+      - name: Trigger deployment
+        run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
+        if: ${{ github.event_name == 'push' && env.CONDITION == 'false' }}   
+      - name: Deployment success notification to discord webhook 1 - actions-status-discord
+        if: ${{ success() }}  
+        # the version of actions-status-discord currently for this hash code is 1.15.3
+        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Deployment failure notification to discord webhook 1 - actions-status-discord
+        if: ${{ failure() }}  
+        # the version of actions-status-discord currently for this hash code is 1.15.3
+        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}          
+
+  tag_release:
+    needs: [simple_deployment_pipeline]
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' && github.env.CONDITION == 'false' }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Bump version and push tag
+        # the version of github-tag-action currently for this hash code is 1.73.0
+        uses: anothrNick/github-tag-action@e528bc2b9628971ce0e6f823f3052d1dcd9d512c
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          DEFAULT_BUMP: patch
+          
+  first_test_job:
+    runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
+    steps:
+      - uses: actions/checkout@v4
       - name: print COMMIT_MESSAGES value directly
         run: echo "${{ env.COMMIT_MESSAGES }}"
       - name: print CONDITION value through own env
@@ -172,36 +91,11 @@ jobs:
       - name: if commit messages not included special piece
         if: ${{ env.CONDITION == 'false' }}
         run: echo "deploy and tag will be executed"
-        
-        
-  second_test_job:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: print COMMIT_MESSAGES value directly (github.env)
-        run: echo "${{ github.env.COMMIT_MESSAGES }}"
-      - name: print CONDITION value through own env (github.env)
-        run: echo "$CONDITION_VALUE"
-        env:
-          CONDITION_VALUE: ${{ github.env.CONDITION }}
-      - name: print CONDITION == false through own env (github.env)
-        run: echo "$CONDITION_COMPARE_RESULT"
-        env:
-          CONDITION_COMPARE_RESULT: ${{ github.env.CONDITION == 'false' }}
-      - name: print CONDITION value directly (github.env)
-        run: echo "${{ github.env.CONDITION }}"
-      - name: print CONDITION == false directly (github.env)
-        run: echo "${{ github.env.CONDITION == 'false'}}"
-      - name: if commit messages included special piece (github.env)
-        if: ${{ github.env.CONDITION == 'true' }}
-        run: echo "deploy and tag will be skipped"
-      - name: if commit messages not included special piece (github.env)
-        if: ${{ github.env.CONDITION == 'false' }}
-        run: echo "deploy and tag will be executed"
              
-        
   third_test_job:
+    needs: [simple_deployment_pipeline]
     runs-on: ubuntu-latest
+    if: ${{ github.event_name == 'push' }}
     steps:
       - uses: actions/checkout@v4
       - name: print COMMIT_MESSAGES value directly (github.env)
