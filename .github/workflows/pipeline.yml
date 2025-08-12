@@ -198,3 +198,52 @@ jobs:
       - name: if commit messages not included special piece (github.env)
         if: ${{ github.env.CONDITION == 'false' }}
         run: echo "deploy and tag will be executed"
+             
+        
+  third_test_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: print COMMIT_MESSAGES value directly (github.env)
+        run: echo "${{ github.env.COMMIT_MESSAGES }}"
+      - name: print CONDITION value through own env (github.env)
+        run: echo "$CONDITION_VALUE"
+        env:
+          CONDITION_VALUE: ${{ github.env.CONDITION }}
+      - name: print CONDITION == false through own env (github.env)
+        run: echo "$CONDITION_COMPARE_RESULT"
+        env:
+          CONDITION_COMPARE_RESULT: ${{ github.env.CONDITION == 'false' }}
+      - name: print CONDITION value directly (github.env)
+        run: echo "${{ github.env.CONDITION }}"
+      - name: print CONDITION == false directly (github.env)
+        run: echo "${{ github.env.CONDITION == 'false'}}"
+      - name: if commit messages included special piece (github.env)
+        if: ${{ github.env.CONDITION == 'true' }}
+        run: echo "deploy and tag will be skipped"
+      - name: if commit messages not included special piece (github.env)
+        if: ${{ github.env.CONDITION == 'false' }}
+        run: echo "deploy and tag will be executed"
+        # -----------------------------------------
+      - name: print a line
+        run: echo "--------------------------------------"
+      - name: print COMMIT_MESSAGES value directly
+        run: echo "${{ env.COMMIT_MESSAGES }}"
+      - name: print CONDITION value through own env
+        run: echo "$CONDITION_VALUE"
+        env:
+          CONDITION_VALUE: ${{ env.CONDITION }}
+      - name: print CONDITION == false through own env
+        run: echo "$CONDITION_COMPARE_RESULT"
+        env:
+          CONDITION_COMPARE_RESULT: ${{ env.CONDITION == 'false' }}
+      - name: print CONDITION value directly
+        run: echo "${{ env.CONDITION }}"
+      - name: print CONDITION == false directly
+        run: echo "${{ env.CONDITION == 'false'}}"
+      - name: if commit messages included special piece
+        if: ${{ env.CONDITION == 'true' }}
+        run: echo "deploy and tag will be skipped"
+      - name: if commit messages not included special piece
+        if: ${{ env.CONDITION == 'false' }}
+        run: echo "deploy and tag will be executed"
