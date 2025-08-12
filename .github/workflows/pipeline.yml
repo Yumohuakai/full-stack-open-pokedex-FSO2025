@@ -122,6 +122,7 @@
 
 name: Debug skip or not which is from ex11.16
 env: 
+  COMMIT_MESSAGES:  ${{ join(github.event.commits.*.message, ', ') }}
   CONDITION: ${{ contains(join(github.event.commits.*.message, ', '), '#skip') }}
 
 on:
@@ -133,7 +134,7 @@ on:
     types: [opened, synchronize]
 
 jobs:
-  a_test_job:
+  first_test_job:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -151,6 +152,8 @@ jobs:
       #   run: echo "$COMMIT_MESSAGES"
       # - name: join all commit messages
       #   run: echo "$COMMIT_MESSAGES"
+      - name: print COMMIT_MESSAGES value directly
+        run: echo "${{ env.COMMIT_MESSAGES }}"
       - name: print CONDITION value through own env
         run: echo "$CONDITION_VALUE"
         env:
@@ -163,13 +166,20 @@ jobs:
         run: echo "${{ env.CONDITION }}"
       - name: print CONDITION == false directly
         run: echo "${{ env.CONDITION == 'false'}}"
-      - name: if commit messages included special piece in push action
+      - name: if commit messages included special piece
         if: ${{ env.CONDITION == 'true' }}
         run: echo "deploy and tag will be skipped"
-      - name: if commit messages included special piece in pull request action
+      - name: if commit messages not included special piece
         if: ${{ env.CONDITION == 'false' }}
         run: echo "deploy and tag will be executed"
         
+        
+  second_test_job:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: print COMMIT_MESSAGES value directly (github.env)
+        run: echo "${{ github.env.COMMIT_MESSAGES }}"
       - name: print CONDITION value through own env (github.env)
         run: echo "$CONDITION_VALUE"
         env:
@@ -185,6 +195,6 @@ jobs:
       - name: if commit messages included special piece (github.env)
         if: ${{ github.env.CONDITION == 'true' }}
         run: echo "deploy and tag will be skipped"
-      - name: if commit messages included special piece (github.env)
+      - name: if commit messages not included special piece (github.env)
         if: ${{ github.env.CONDITION == 'false' }}
         run: echo "deploy and tag will be executed"
