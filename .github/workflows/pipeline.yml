@@ -37,20 +37,23 @@ jobs:
           path: playwright-report/
           retention-days: 30          
       - name: Trigger deployment
+        id: deploy
         run: curl https://api.render.com/deploy/srv-${{ secrets.RENDER_SERVICE_ID }}?key=${{ secrets.RENDER_API_KEY }}
         if: ${{ github.event_name == 'push' && env.SKIP_DEPLOY == 'false' }}   
-      - name: Deployment success notification to discord webhook 1 - actions-status-discord
-        if: ${{ !cancelled() && success() }}  
-        # the version of actions-status-discord currently for this hash code is 1.15.3
-        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}
-      - name: Deployment failure notification to discord webhook 1 - actions-status-discord
-        if: ${{ !cancelled() && failure() }}  
-        # the version of actions-status-discord currently for this hash code is 1.15.3
-        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
-        with:
-          webhook: ${{ secrets.DISCORD_WEBHOOK }}          
+      - name: check deployment whether is skipped
+        run: echo "conclusion - ${{ steps.deploy.conclusion }}, outcome - ${{ steps.deploy.outcome }}, outputs - ${{ steps.deploy.outputs }}"
+      # - name: Deployment success notification to discord webhook 1 - actions-status-discord
+      #   if: ${{ !cancelled() && success() }}  
+      #   # the version of actions-status-discord currently for this hash code is 1.15.3
+      #   uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
+      #   with:
+      #     webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      # - name: Deployment failure notification to discord webhook 1 - actions-status-discord
+      #   if: ${{ !cancelled() && failure() }}  
+      #   # the version of actions-status-discord currently for this hash code is 1.15.3
+      #   uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
+      #   with:
+      #     webhook: ${{ secrets.DISCORD_WEBHOOK }}          
           
   tag_release:
     needs: [simple_deployment_pipeline]
