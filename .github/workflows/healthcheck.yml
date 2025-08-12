@@ -1,4 +1,4 @@
-name: testing - Periodic health check
+name: test - Periodic health check
 
 on:
   push:
