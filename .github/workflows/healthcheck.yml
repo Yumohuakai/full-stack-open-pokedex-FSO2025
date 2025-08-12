@@ -17,4 +17,16 @@ jobs:
         with:
           url: https://full-stack-open-pokedex-fso2025.onrender.com/health
           max-attempts: 3 # Optional, defaults to 1
-          retry-delay: 5s # Optional, only applicable to max-attempts > 1          
+          retry-delay: 5s # Optional, only applicable to max-attempts > 1             
+      - name: Scheduled Health check Success notification to webhhook only for testing
+        if: ${{ success() }}
+        # the version of actions-status-discord currently for this hash code is 1.15.3
+        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }}
+      - name: Scheduled Health check Failure notification to webhhook only for testing
+        if: ${{ failure() }}
+        # the version of actions-status-discord currently for this hash code is 1.15.3
+        uses: sarisia/actions-status-discord@5ddd3b114a98457dd80a39b2f00b6a998cd69008
+        with:
+          webhook: ${{ secrets.DISCORD_WEBHOOK }} 
