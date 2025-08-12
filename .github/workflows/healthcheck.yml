@@ -4,8 +4,9 @@ on:
   schedule:
     # * is a special character in YAML so you have to quote this string
     # Due to I use Helsinki time zone (UTC +3), 
-    # so if I want to do the schedule testing at 11am/monday, I need to reduce 3 hours
-    - cron:  '15 * * * *'  # minute(0-59) hour(0-23) date(1-31) month(1-12) weekday(0-6, 0 is sunday)
+    # so if I want to do the schedule testing at 11am/13th/month, I need to reduce 3 hours
+    - cron:  '0 8 13 * *'  # minute(0-59) hour(0-23) date(1-31) month(1-12) weekday(0-6, 0 is sunday)
+    # - cron:  '15 * * * *'  # in discord webhook channel, it sent at 16:02, 16:47(45min), 17:38(51min), 18:35(57min) on 2025.8.12
 
 jobs:
   health_check:
