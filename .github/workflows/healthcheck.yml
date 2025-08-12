@@ -1,19 +1,17 @@
 name: test - Periodic health check
 
 on:
-  push:
-    branches:
-      - main
-  pull_request:
-    branches: [main]
-    types: [opened, synchronize]
+  schedule:
+    # * is a special character in YAML so you have to quote this string
+    # Due to I use Helsinki time zone (UTC +3), 
+    # so if I want to do the schedule testing at 11am/monday, I need to reduce 3 hours
+    - cron:  '15 * * * *'  # minute(0-59) hour(0-23) date(1-31) month(1-12) weekday(0-6, 0 is sunday)
 
 jobs:
   health_check:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }}
     steps:
-      - name: test - Scheduled Health check
+      - name: Scheduled Health check
         # the tag of url-health-check-action currently for this hash code is v4 (Using Node v20)
         uses: jtalk/url-health-check-action@b716ccb6645355dd9fcce8002ce460e5474f7f00
         with:
